@@ -9,7 +9,13 @@ router.use(function timeLog(req, res, next) {
 });
 
 router.get('/', async (req, res) => {
-    return res.send(await db.fetch());
+    let result = await db.fetch();
+    let all = result.items;
+    while (result.last) {
+        result = await db.fetch({}, {last: result.last});
+        all = all.concat(result.items);
+    }
+    return res.send(all);
 });
 
 router.get('/:id', async (req, res) => {
@@ -43,6 +49,14 @@ router.patch('/:id', async (req, res) => {
         return res.status(400).send('Player: Name is missing');
     }
     return res.status(201).send(await db.update({name: body.name}, id));
+});
+
+router.delete('/:id', async (req, res) => {
+    const id = req.params.id;
+    if (!id) {
+        return res.status(400).send('Player: Id is missing');
+    }
+    return res.send(await db.delete(id));
 });
 
 module.exports = router;

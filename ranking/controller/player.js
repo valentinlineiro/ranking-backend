@@ -48,7 +48,11 @@ router.patch('/:id', async (req, res) => {
     if (!body.name) {
         return res.status(400).send('Player: Name is missing');
     }
-    return res.status(201).send(await db.update({name: body.name}, id));
+    let toUpdate = {name: body.name};
+    if(body.active != null) {
+        toUpdate.active = body.active;
+    }
+    return res.status(201).send(await db.update(toUpdate, id));
 });
 
 router.delete('/:id', async (req, res) => {

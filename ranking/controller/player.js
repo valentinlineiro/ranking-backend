@@ -28,7 +28,6 @@ router.get('/:id', async (req, res) => {
 
 router.post('/', async (req, res) => {
     const body = req.body;
-    console.log(body);
     if (!body.name) {
         return res.status(400).send('Player: Required fields missing');
     }
